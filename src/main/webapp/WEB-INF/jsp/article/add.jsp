@@ -28,28 +28,25 @@
 <div class="page-title-box">
 	<h1 class="main-title con">${pageTitle}</h1>
 </div>
-<form class="con" action="./doAdd" method="POST"
-	onsubmit="submitAddForm(this); return false;">
-	<div>
-		<span> 제목 </span>
+<form class="con write-form" action="./doAdd" method="POST" onsubmit="submitAddForm(this); return false;">
+	<div class="form-row">
+		<label> 제목 </label>
 		<div>
-			<input name="title" type="text" placeholder="제목"
-				autofocus="autofocus">
+			<input name="title" type="text" placeholder="제목을 입력해주세요." autofocus="autofocus">
 		</div>
 	</div>
 
-	<div>
-		<span> 내용 </span>
+	<div class="form-row">
+		<label> 내용 </label>
 		<div>
-			<textarea name="body" placeholder="내용"></textarea>
+			<textarea name="body" placeholder="내용을 입력해주세요."></textarea>
 		</div>
 	</div>
 
-	<div>
-		<span> 작성 </span>
+	<div class="form-row">
+		<label> 작성 </label>
 		<div>
-			<input type="submit" value="작성"> <input type="reset"
-				value="취소" onclick="history.back();">
+			<input type="submit" value="작성"> <input type="reset" value="취소" onclick="history.back();">
 		</div>
 	</div>
 </form>

@@ -28,6 +28,6 @@
 		</tbody>
 	</table>
 </div>
-<div class="con"><a href="list?page=1">[리스트로 돌아가기]</a>/<a href="modify?id=${article.id}">[수정하기]</a>/<a href="doDelete?id=${article.id}">[삭제하기]</a></div>
+<div class="con detail-button"><a href="list?page=1">[리스트로 돌아가기]</a>/<a href="modify?id=${article.id}">[수정하기]</a>/<a href="doDelete?id=${article.id}">[삭제하기]</a></div>
 
 <%@ include file="../part/foot.jspf"%>

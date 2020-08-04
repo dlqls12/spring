@@ -67,3 +67,28 @@ label[for] {
 	color:red;
 }
 
+.write-form > .form-row {
+	display:flex;
+	margin:10px;
+}
+
+.write-form > .form-row > label {
+	margin-right:5px;
+}
+
+.write-form > .form-row > div > input {
+	padding:5px;
+}
+
+.main-title {
+	border-bottom:2px solid black;
+}
+
+.detail-button {
+	display:flex;
+	justify-content:flex-end;
+}
+
+.detail-button > a:hover {
+	color:red;
+}
