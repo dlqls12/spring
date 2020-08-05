@@ -6,18 +6,15 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.sbs.lyb.at.dto.Article;
+import com.sbs.lyb.at.dto.ArticleReply;
 
-@Mapper // 이렇게 해주면 ArticleDao의 구현체를 마이바티스가 대신 구현해준다.
+@Mapper
 public interface ArticleDao {
-	public List<Article> getForPrintArticles();
+	List<Article> getForPrintArticles();
 
-	public void add(Map<String, Object> param);
+	Article getForPrintArticleById(int id);
 
-	public Article getForPrintArticleById(int id);
-	
-	public void delete(int id);
-	
-	public void modify(Map<String, Object> param);
+	void write(Map<String, Object> param);
 
-	public List<Article> getArticles(int limitFrom);
+	List<ArticleReply> getForPrintArticleReplies(int id);
 }

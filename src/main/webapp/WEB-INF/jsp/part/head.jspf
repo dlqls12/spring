@@ -27,3 +27,5 @@
 
 </head>
 <body>
+	<div class="outer-box">
+		<h1 class="page-title-box con">${pageTitle}</h1>

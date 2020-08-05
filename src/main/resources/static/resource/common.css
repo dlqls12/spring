@@ -44,51 +44,46 @@ label[for] {
 	text-align: left;
 }
 
+/* 폼 관련 라이브러리 */
+.form1 .form-control-box>input, .form1 .form-control-box>textarea {
+	width: 100%;
+	padding: 0;
+	display: block;
+	box-sizing: border-box;
+	padding: 10px;
+}
+
+.form1 .form-control-box>textarea {
+	min-height: 300px;
+	resize: none;
+}
+
 /* 커스텀 */
 .con {
 	max-width: 1200px;
 }
 
 .page-title-box {
-	margin-top:30px;
-	margin-bottom:30px;
+	margin-top: 30px;
+	margin-bottom: 30px;
 }
 
-.paging {
-	display:flex;
-	justify-content:center;
+.reply-list-box > table > tbody > tr[data-modify-mode="N"] .modify-mode-visible {
+	display:none;
 }
 
-.paging > div > a {
-	padding:5px;
+.reply-list-box > table > tbody > tr[data-modify-mode="Y"] .modify-mode-invisible {
+	display:none;
 }
 
-.current {
-	color:red;
+.reply-list-box > table > tbody > tr > .reply-body-td > .modify-mode-visible > form {
+	width:100%;
+	display:block;
 }
 
-.write-form > .form-row {
-	display:flex;
-	margin:10px;
-}
-
-.write-form > .form-row > label {
-	margin-right:5px;
-}
-
-.write-form > .form-row > div > input {
-	padding:5px;
-}
-
-.main-title {
-	border-bottom:2px solid black;
-}
-
-.detail-button {
-	display:flex;
-	justify-content:flex-end;
-}
-
-.detail-button > a:hover {
-	color:red;
+.reply-list-box > table > tbody > tr > .reply-body-td > .modify-mode-visible > form > textarea {
+	width:100%;
+	height:100px;
+	box-sizing:border-box;
+	display:block;
 }
