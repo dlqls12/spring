@@ -55,4 +55,12 @@
 		WHERE articleId = ${id}
 		ORDER BY id DESC
 	</select>
+	
+	<insert id="writeReply" parameterType="map" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO articleReply
+		SET regDate = NOW(),
+		updateDate = NOW(),
+		body = #{body},
+		articleId = #{articleId}
+	</insert>
 </mapper>

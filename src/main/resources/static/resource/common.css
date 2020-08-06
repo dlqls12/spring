@@ -87,3 +87,26 @@ label[for] {
 	box-sizing:border-box;
 	display:block;
 }
+
+.reply-write > form {
+	display:block;
+	width:100%;
+}
+
+.reply-write > form > table {
+	width:100%;
+	border-collapse:collapse;
+}
+
+.reply-write >form > table th, .reply-write > form > table td {
+	border:1px solid black;
+	padding:10px;
+}
+
+.reply-write > form > table textarea {
+	width:100%;
+	height:100px;
+	display:block;
+	box-sizing:border-box;
+	resize: none;
+}

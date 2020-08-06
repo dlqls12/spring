@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sbs.lyb.at.dto.Article;
 import com.sbs.lyb.at.dto.ArticleReply;
@@ -51,6 +52,16 @@ public class ArticleController {
 		
 		String redirectUrl = (String)param.get("redirectUrl");
 		redirectUrl = redirectUrl.replace("#id", newArticleId + "");
+		
+		return "redirect:" + redirectUrl;
+	}
+	
+	@RequestMapping("/article/doWriteReply")
+	public String doWriteReply(@RequestParam Map<String, Object> param) {
+		int newArticleReplyId = articleService.writeReply(param);
+		
+		String redirectUrl = (String)param.get("redirectUrl");
+		redirectUrl = redirectUrl.replace("#id", newArticleReplyId + "");
 		
 		return "redirect:" + redirectUrl;
 	}

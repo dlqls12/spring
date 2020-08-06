@@ -1,19 +1,44 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <c:set var="pageTitle" value="게시물 상세내용" />
 <%@ include file="../part/head.jspf"%>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
-	function ReplyWriteForm__submit(form) {
+	function Article__writeReply(form) {
+		
 		form.body.value = form.body.value.trim();
 		if (form.body.value.length == 0) {
 			form.body.focus();
 			alert('내용을 입력해주세요.');
 			return;
 		}
-		form.submit();
+
+		var $form = $(form);
+
+		$form.find('input[type="submit"]').val('작성중..');
+		$form.find('input[type="submit"]').prop('disabled', true);
+		$form.find('input[type="reset"]').prop('disabled', true);
+		
+		$.post(
+			'./doWriteReply',
+			{
+				articleId:articleId,
+				body:form.body.value
+			},
+			function(data) {
+				if ( data.resultCode.substr(0, 2) == 'F-' ) {
+					alert(data.msg);
+				}
+				else {
+					$form.find('input[type="submit"]').val('작성');
+					$form.find('input[type="submit"]').prop('disabled', false);
+					$form.find('input[type="reset"]').prop('disabled', false);
+				}
+			}, 
+			'json'
+		);
+		form.body.value = '';
 	}
 
 	function Article__deleteReply(el, id) {
@@ -28,7 +53,12 @@
 	function Article__turnOnModifyMode(el) {
 		var $tr = $(el).closest('tr');
 
+		var body = $tr.find(' > .reply-body-td > .modify-mode-invisible').html().trim();
+		
+		$tr.find(' > .reply-body-td > .modify-mode-visible > form > textarea').val(body);
+		
 		$tr.attr('data-modify-mode', 'Y')
+		$tr.siblings('[data-modify-mode="Y"]').attr('data-modify-mode', 'N');
 	}
 
 	function Article__turnOffModifyMode(el) {
@@ -93,28 +123,27 @@
 <div class="con">
 	<h2>댓글 작성하기</h2>
 </div>
-<div class="con">
-	<form method="POST" class="form1" action="doWriteReply" onsubmit="ReplyWriteForm__submit(this); return false;">
-		<div class="table-box con">
-			<table>
-				<tbody>
-					<tr>
-						<th>내용</th>
-						<td>
-							<div class="form-control-box">
-								<textarea placeholder="내용을 입력해주세요." name="body" maxlength="2000"></textarea>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<th>작성</th>
-						<td>
-							<button class="btn btn-primary" type="submit">작성</button>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
+<div class="reply-write con">
+	<form action="./doWriteReply" method="POST" onsubmit="Article__writeReply(this);">
+		<input type="hidden" name="redirectUrl" value="/article/detail?id=#id">
+		<input type="hidden" name="articleId" value="${article.id}">
+		<table>
+			<tbody>
+				<tr>
+					<th>내용</th>
+					<td>
+						<textarea placeholder="내용을 입력해주세요." name="body" maxlength="300"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<th>작성</th>
+					<td>
+						<input type="submit" value="작성" />
+						<input type="reset" value="취소" />
+					</td>
+				</tr>
+			</tbody>
+		</table>
 	</form>
 </div>
 
@@ -149,7 +178,7 @@
 						<div class="modify-mode-visible">
 							<form action="" onsubmit="Article__modifyReply(this); return false;">
 								<input type="hidden" name="id" value="${reply.id}">
-								<textarea maxlength="300" name="body">${reply.body}</textarea>
+								<textarea maxlength="300" name="body"></textarea>
 								<input type="submit" value="수정완료">
 							</form>
 						</div>

@@ -33,4 +33,9 @@ public class ArticleService {
 	public List<ArticleReply> getForPrintArticleReplies(int id) {
 		return articleDao.getForPrintArticleReplies(id);
 	}
+
+	public int writeReply(Map<String, Object> param) {
+		articleDao.writeReply(param);
+		return Util.getAsInt(param.get("articleId"));
+	}
 }

@@ -17,4 +17,6 @@ public interface ArticleDao {
 	void write(Map<String, Object> param);
 
 	List<ArticleReply> getForPrintArticleReplies(int id);
+
+	void writeReply(Map<String, Object> param);
 }

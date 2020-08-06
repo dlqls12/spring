@@ -32,5 +32,4 @@
 
 </div>
 
-
 <%@ include file="../part/foot.jspf"%>
