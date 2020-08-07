@@ -56,11 +56,14 @@
 		ORDER BY id DESC
 	</select>
 	
-	<insert id="writeReply" parameterType="map" useGeneratedKeys="true" keyProperty="id">
+	<insert id="writeReply" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO articleReply
 		SET regDate = NOW(),
 		updateDate = NOW(),
 		body = #{body},
-		articleId = #{articleId}
+		memberId = 1,
+		articleId = #{articleId},
+		displayStatus
+		= 1
 	</insert>
 </mapper>
