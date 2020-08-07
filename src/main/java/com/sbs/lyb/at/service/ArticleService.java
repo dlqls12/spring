@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.sbs.lyb.at.dao.ArticleDao;
 import com.sbs.lyb.at.dto.Article;
@@ -16,26 +17,36 @@ import com.sbs.lyb.at.util.Util;
 public class ArticleService {
 	@Autowired
 	private ArticleDao articleDao;
-	
+
 	public List<Article> getForPrintArticles() {
-		return articleDao.getForPrintArticles();
+		List<Article> articles = articleDao.getForPrintArticles();
+
+		return articles;
 	}
 
 	public Article getForPrintArticleById(int id) {
-		return articleDao.getForPrintArticleById(id);
+		Article article = articleDao.getForPrintArticleById(id);
+
+		return article;
 	}
 
 	public int write(Map<String, Object> param) {
 		articleDao.write(param);
-		return Util.getAsInt(param.get("id"));
-	}
 
-	public List<ArticleReply> getForPrintArticleReplies(int id) {
-		return articleDao.getForPrintArticleReplies(id);
+		return Util.getAsInt(param.get("id"));
 	}
 
 	public int writeReply(Map<String, Object> param) {
 		articleDao.writeReply(param);
-		return Util.getAsInt(param.get("articleId"));
+
+		return Util.getAsInt(param.get("id"));
+	}
+
+	public List<ArticleReply> getForPrintArticleReplies(@RequestParam Map<String, Object> param) {
+		return articleDao.getForPrintArticleReplies(param);
+	}
+
+	public void deleteReply(int id) {
+		articleDao.deleteReply(id);
 	}
 }
