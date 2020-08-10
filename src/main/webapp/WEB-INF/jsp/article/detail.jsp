@@ -27,7 +27,8 @@
 		</tbody>
 	</table>
 	<div>
-		<a href="list">[리스트로 돌아가기]</a><a href="modify?id=${article.id}">[수정하기]</a><a href="doDelete?id=${article.id}">[삭제하기]</a>
+		<a href="list">[리스트로 돌아가기]</a><a href="modify?id=${article.id}">[수정하기]</a><a
+			href="doDelete?id=${article.id}">[삭제하기]</a>
 	</div>
 </div>
 
@@ -97,31 +98,118 @@
 			</tr>
 		</thead>
 		<tbody>
-		
+
 		</tbody>
 	</table>
+</div>
+
+<style>
+.article-reply-modify-form-modal {
+	position:fixed;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	background-color:rgba(0,0,0,0.4);
+	display:none;	
+}
+
+.article-reply-modify-form-modal-actived .article-reply-modify-form-modal {
+	display:flex;
+}
+</style>
+
+<div class="article-reply-modify-form-modal flex flex-ai-c flex-jc-c">
+	<form action="" class="form1 border-red bg-white padding-10" onsubmit="ArticleReplyList__submitModifyFormModal(this); return false;">
+		<input type="hidden" name="id" />
+		<div class="form-row">
+			<div class="form-control-label">
+				내용
+			</div>
+			<div class="form-control-label">
+				<textarea name="body" placeholder="내용을 입력해주세요."></textarea>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="form-control-label">
+				수정
+			</div>
+			<div class="form-control-label">
+				<button type="submit">수정</button>
+				<button type="button" onclick="ArticleReplyList__hideModifyFormModal();">취소</button>
+			</div>
+		</div>
+	</form>
 </div>
 
 <script>
 	var ArticleReplyList__$box = $('.article-reply-list-box');
 	var ArticleReplyList__$tbody = ArticleReplyList__$box.find('tbody');
 	var ArticleReplyList__lastLodedId = 0;
+	var ArticleReplyList__submitModifyFormDone = false;
+
+	function ArticleReplyList__submitModifyFormModal(form) {
+		if( ArticleReplyList__submitModifyFormDone ) {
+			alert('처리중입니다.');
+			return;
+		}
+		
+		form.body.value = form.body.value.trim();
+
+		if ( form.body.value.length == 0 ) {
+			alert('내용을 입력해주세요/');
+			form.body.focus();
+
+			return;
+		}
+
+		var id = form.id.value;
+		var body = form.body.value;
+		
+		ArticleReplyList__submitModifyFormDone = true;
+		$.post('doModifyReplyAjax', {
+			id: id,
+			body: body
+		}, function(data) {
+			if ( data.resultCode && data.resultCode.substr(0, 2) == 'S-') {
+				var $tr = $('.article-reply-list-box tbody > tr[data-id="' + id + '"] .article-reply-body');
+				$tr.empty().append(body);
+			}
+
+			ArticleReplyList__hideModifyFormModal();
+			ArticleReplyList__submitModifyFormDone = false;
+		}, 'json');
+	}
+	
+	function ArticleReplyList__showModifyFormModal(el) {
+		$('html').addClass('article-reply-modify-form-modal-actived');
+		var $tr = $(el).closest('tr');
+		var originBody = $tr.data('data-originBody');
+		
+		var id = $tr.attr('data-id');
+		var form = $('.article-reply-modify-form-modal form').get(0);
+
+		form.id.value = id;
+		form.body.value = originBody;
+	}
+
+	function ArticleReplyList__hideModifyFormModal() {
+		$('html').removeClass('article-reply-modify-form-modal-actived');
+	}
+	
+	function ArticleReplyList__loadMoreCallback(data) {
+		if (data.body.articleReplies && data.body.articleReplies.length > 0) {
+			ArticleReplyList__lastLodedId = data.body.articleReplies[data.body.articleReplies.length - 1].id;
+			ArticleReplyList__drawReplies(data.body.articleReplies);
+		}
+		setTimeout(ArticleReplyList__loadMore, 2000);
+	}
+
 	function ArticleReplyList__loadMore() {
-		$
-				.get(
-						'getForPrintArticleReplies',
-						{
-							articleId : param.id,
-							from : ArticleReplyList__lastLodedId + 1
-						},
-						function(data) {
-							if (data.body.articleReplies
-									&& data.body.articleReplies.length > 0) {
-								ArticleReplyList__lastLodedId = data.body.articleReplies[data.body.articleReplies.length - 1].id;
-								ArticleReplyList__drawReplies(data.body.articleReplies);
-							}
-							setTimeout(ArticleReplyList__loadMore, 2000);
-						}, 'json');
+		$.get('getForPrintArticleReplies', {
+			articleId : param.id,
+			from : ArticleReplyList__lastLodedId + 1
+		}, ArticleReplyList__loadMoreCallback, 'json');
 	}
 	function ArticleReplyList__drawReplies(articleReplies) {
 		for (var i = 0; i < articleReplies.length; i++) {
@@ -130,23 +218,18 @@
 		}
 	}
 	function ArticleReplyList__delete(el) {
-		if ( confirm('삭제 하시겠습니까?') == false ) {
+		if (confirm('삭제 하시겠습니까?') == false) {
 			return;
 		}
-		
+
 		var $tr = $(el).closest('tr');
-		
+
 		var id = $tr.attr('data-id');
-		$.post(
-			'./doDeleteReplyAjax',
-			{
-				id:id
-			},
-			function(data) {
-				$tr.remove();
-			},
-			'json'
-		);
+		$.post('./doDeleteReplyAjax', {
+			id : id
+		}, function(data) {
+			$tr.remove();
+		}, 'json');
 	}
 	function ArticleReplyList__drawReply(articleReply) {
 		var html = '';
@@ -154,10 +237,20 @@
 		html += '<td>' + articleReply.id + '</td>';
 		html += '<td>' + articleReply.regDate + '</td>';
 		html += '<td>' + articleReply.extra.writer + '</td>';
-		html += '<td>' + articleReply.body + '</td>';
-		html += '<td><button onclick="ArticleReplyList__delete(this);">삭제</button><button onclick="ArticleReplyList__modify(this);">수정</button></td>';
+		html += '<td class="article-reply-body">' + articleReply.body + '</td>';
+		html += '<td>';
+		if (articleReply.extra.actorCanDelete) {
+			html += '<button type="button" onclick="ArticleReplyList__delete(this);">삭제</button>'
+		}
+		if (articleReply.extra.actorCanModify) {
+			html += '<button type="button" onclick="ArticleReplyList__showModifyFormModal(this);">수정</button>'
+		}
+		html += '</td>';
 		html += '</tr>';
-		ArticleReplyList__$tbody.prepend(html);
+
+		var $tr = $(html);
+		$tr.data('data-originBody', articleReply.body);
+		ArticleReplyList__$tbody.prepend($tr);
 	}
 	ArticleReplyList__loadMore();
 </script>

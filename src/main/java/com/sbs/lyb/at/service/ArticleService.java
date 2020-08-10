@@ -11,6 +11,7 @@ import com.sbs.lyb.at.dao.ArticleDao;
 import com.sbs.lyb.at.dto.Article;
 import com.sbs.lyb.at.dto.ArticleReply;
 import com.sbs.lyb.at.dto.Member;
+import com.sbs.lyb.at.dto.ResultData;
 import com.sbs.lyb.at.util.Util;
 
 
@@ -58,15 +59,15 @@ public class ArticleService {
 
 	private void updateForPrintInfo(Member actor, ArticleReply articleReply) {
 		articleReply.getExtra().put("actorCanDelete", actorCanDelete(actor,articleReply));
-		articleReply.getExtra().put("actorCanUpdate", actorCanUpdate(actor,articleReply));
+		articleReply.getExtra().put("actorCanModify", actorCanModify(actor,articleReply));
 	}
 
-	private Object actorCanUpdate(Member actor, ArticleReply articleReply) {
+	public boolean actorCanModify(Member actor, ArticleReply articleReply) {
 		return actor != null && actor.getId() == articleReply.getMemberId() ? true : false;
 	}
 
-	private Object actorCanDelete(Member actor, ArticleReply articleReply) {
-		return actorCanUpdate(actor, articleReply);
+	public boolean actorCanDelete(Member actor, ArticleReply articleReply) {
+		return actorCanModify(actor, articleReply);
 	}
 
 	public void deleteReply(int id) {
@@ -79,5 +80,14 @@ public class ArticleService {
 
 	public void modify(Map<String, Object> param) {
 		articleDao.modify(param);
+	}
+
+	public ArticleReply getForPrintArticleReplyById(int id) {
+		return articleDao.getForPrintArticleReplyById(id);
+	}
+
+	public ResultData modifyReply(Map<String, Object> param) {
+		articleDao.modifyReply(param);
+		return new ResultData("S-1", String.format("%d번 댓글을 수정하였습니다.", Util.getAsInt(param.get("id"))), param);
 	}
 }
