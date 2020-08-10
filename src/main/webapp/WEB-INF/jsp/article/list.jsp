@@ -3,6 +3,9 @@
 
 <c:set var="pageTitle" value="게시물 리스트" />
 <%@ include file="../part/head.jspf"%>
+<div class="con">
+	<a href="write">[게시물 작성하기]</a>
+</div>
 
 <div class="table-box con">
 	<table>

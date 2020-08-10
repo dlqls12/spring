@@ -26,6 +26,9 @@
 			</tr>
 		</tbody>
 	</table>
+	<div>
+		<a href="list">[리스트로 돌아가기]</a><a href="modify?id=${article.id}">[수정하기]</a><a href="doDelete?id=${article.id}">[삭제하기]</a>
+	</div>
 </div>
 
 <c:if test="${isLogined}">
@@ -43,6 +46,7 @@
 				articleId : param.id,
 				body : form.body.value
 			}, function(data) {
+				alert(data.msg);
 			}, 'json');
 			form.body.value = '';
 		}
@@ -93,7 +97,7 @@
 			</tr>
 		</thead>
 		<tbody>
-
+		
 		</tbody>
 	</table>
 </div>
@@ -151,7 +155,7 @@
 		html += '<td>' + articleReply.regDate + '</td>';
 		html += '<td>' + articleReply.extra.writer + '</td>';
 		html += '<td>' + articleReply.body + '</td>';
-		html += '<td><button onclick="ArticleReplyList__delete(this);">삭제</button></td>';
+		html += '<td><button onclick="ArticleReplyList__delete(this);">삭제</button><button onclick="ArticleReplyList__modify(this);">수정</button></td>';
 		html += '</tr>';
 		ArticleReplyList__$tbody.prepend(html);
 	}

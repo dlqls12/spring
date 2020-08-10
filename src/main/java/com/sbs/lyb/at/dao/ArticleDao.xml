@@ -36,6 +36,7 @@
 		INTO article
 		SET regDate = NOW(),
 		updateDate = NOW(),
+		displayStatus = 1,
 		title = #{title},
 		body = #{body}
 	</insert>
@@ -51,6 +52,26 @@
 		displayStatus
 		= 1
 	</insert>
+
+	<update id="delete">
+		<![CDATA[	
+		UPDATE article
+		SET displayStatus = 0,
+		delDate = NOW(),
+		delStatus = 1
+		WHERE id = #{id}
+		]]>
+	</update>
+	
+	<update id="modify">
+		<![CDATA[	
+		UPDATE article
+		SET title = #{title},
+		body = #{body},
+		updateDate = NOW()
+		WHERE id = #{id}
+		]]>
+	</update>
 
 	<delete id="deleteReply">
 		<![CDATA[	

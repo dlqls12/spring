@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.sbs.lyb.at.dao.ArticleDao;
 import com.sbs.lyb.at.dto.Article;
 import com.sbs.lyb.at.dto.ArticleReply;
+import com.sbs.lyb.at.dto.Member;
 import com.sbs.lyb.at.util.Util;
 
 
@@ -43,10 +44,40 @@ public class ArticleService {
 	}
 
 	public List<ArticleReply> getForPrintArticleReplies(@RequestParam Map<String, Object> param) {
-		return articleDao.getForPrintArticleReplies(param);
+		List<ArticleReply> articleReplies = articleDao.getForPrintArticleReplies(param);
+		
+		Member actor = (Member)param.get("actor");
+		
+		
+		for ( ArticleReply articleReply : articleReplies ) {
+			updateForPrintInfo(actor,articleReply);
+		}
+		
+		return articleReplies;
+	}
+
+	private void updateForPrintInfo(Member actor, ArticleReply articleReply) {
+		articleReply.getExtra().put("actorCanDelete", actorCanDelete(actor,articleReply));
+		articleReply.getExtra().put("actorCanUpdate", actorCanUpdate(actor,articleReply));
+	}
+
+	private Object actorCanUpdate(Member actor, ArticleReply articleReply) {
+		return actor != null && actor.getId() == articleReply.getMemberId() ? true : false;
+	}
+
+	private Object actorCanDelete(Member actor, ArticleReply articleReply) {
+		return actorCanUpdate(actor, articleReply);
 	}
 
 	public void deleteReply(int id) {
 		articleDao.deleteReply(id);
+	}
+
+	public void delete(int id) {
+		articleDao.delete(id);
+	}
+
+	public void modify(Map<String, Object> param) {
+		articleDao.modify(param);
 	}
 }

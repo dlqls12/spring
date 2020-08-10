@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sbs.lyb.at.dto.Article;
 import com.sbs.lyb.at.dto.ArticleReply;
+import com.sbs.lyb.at.dto.Member;
 import com.sbs.lyb.at.dto.ResultData;
 import com.sbs.lyb.at.service.ArticleService;
 
@@ -47,7 +48,46 @@ public class ArticleController {
 	public String showWrite() {
 		return "article/write";
 	}
+	
+	@RequestMapping("/usr/article/modify")
+	public String showModify(Model model, int id) {
+		Article article = articleService.getForPrintArticleById(id);
+		model.addAttribute("article", article);
+		return "article/modify";
+	}
+	
+	@RequestMapping("/usr/article/doModify")
+	@ResponseBody
+	public String doModify(@RequestParam Map<String, Object> param) {
+		
+		int id = Integer.parseInt((String) param.get("id"));
+		
+		articleService.modify(param);
+		
+		StringBuilder sb = new StringBuilder();
+		String msg = id + "번 글이 수정 되었습니다.";
+		sb.append("alert('" + msg + "');");
+		sb.append("location.replace('./list');");
 
+		sb.insert(0, "<script>");
+		sb.append("</script>");
+		return sb.toString();
+	}
+	
+	@RequestMapping("/usr/article/doDelete")
+	@ResponseBody
+	public String doDelete(int id) {
+		articleService.delete(id);
+		StringBuilder sb = new StringBuilder();
+		String msg = id + "번 글이 삭제 되었습니다.";
+		sb.append("alert('" + msg + "');");
+		sb.append("location.replace('./list');");
+
+		sb.insert(0, "<script>");
+		sb.append("</script>");
+		return sb.toString();
+	}
+	
 	@RequestMapping("/usr/article/doWrite")
 	public String doWrite(@RequestParam Map<String, Object> param) {
 		int newArticleId = articleService.write(param);
@@ -71,9 +111,11 @@ public class ArticleController {
 
 	@RequestMapping("/usr/article/getForPrintArticleReplies")
 	@ResponseBody
-	public ResultData getForPrintArticleReplies(@RequestParam Map<String, Object> param) {
+	public ResultData getForPrintArticleReplies(@RequestParam Map<String, Object> param, HttpServletRequest req) {
+		Member loginedMember = (Member) req.getAttribute("loginedMemberMember");
 		Map<String, Object> rsDataBody = new HashMap<>();
 		
+		param.put("actor", loginedMember);
 		List<ArticleReply> articleReplies = articleService.getForPrintArticleReplies(param);
 		rsDataBody.put("articleReplies", articleReplies);
 
