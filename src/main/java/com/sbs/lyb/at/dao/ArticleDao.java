@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.sbs.lyb.at.dto.Article;
-import com.sbs.lyb.at.dto.ArticleReply;
+import com.sbs.lyb.at.dto.Reply;
 
 @Mapper
 public interface ArticleDao {
@@ -19,7 +19,7 @@ public interface ArticleDao {
 
 	void writeReply(Map<String, Object> param);
 
-	List<ArticleReply> getForPrintArticleReplies(Map<String, Object> param);
+	List<Reply> getForPrintReplies(Map<String, Object> param);
 
 	void deleteReply(@Param("id") int id);
 
@@ -27,7 +27,7 @@ public interface ArticleDao {
 
 	void modify(Map<String, Object> param);
 
-	ArticleReply getForPrintArticleReplyById(@Param("id") int id);
+	Reply getForPrintReplyById(@Param("id") int id);
 
 	void modifyReply(Map<String, Object> param);
 }
