@@ -39,18 +39,47 @@
 				form.body.focus();
 				return;
 			}
-			$.post('./../reply/doWriteReplyAjax', {
-				relId : param.id,
-				relTypeCode : 'article',
-				body : form.body.value
-			}, function(data) {
-			}, 'json');
-			form.body.value = '';
+			var startUploadFiles = function(onSuccess) {
+				var fileUploadFormData = new FormData(form);
+				fileUploadFormData.delete("relTypeCode");
+				fileUploadFormData.delete("relId");
+				$.ajax({
+					url : './../file/doUploadAjax',
+					data : fileUploadFormData,
+					processData : false,
+					contentType : false,
+					dataType:"json",
+					type : 'POST',
+					success : onSuccess
+				});
+			}
+			var startWriteReply = function(fileIdsStr, onSuccess) {
+				$.ajax({
+					url : './../reply/doWriteReplyAjax',
+					data : {
+						fileIdsStr: fileIdsStr,
+						body: form.body.value,
+						relTypeCode: form.relTypeCode.value,
+						relId: form.relId.value
+					},
+					dataType:"json",
+					type : 'POST',
+					success : onSuccess
+				});
+			};
+			startUploadFiles(function(data) {
+				var idsStr = data.body.fileIdsStr;
+				startWriteReply(idsStr, function(data) {
+					form.body.value = '';
+				});
+			});
 		}
 	</script>
 
-	<form class="table-box con form1" action=""
+	<form class="table-box con form1"
 		onsubmit="ArticleWriteReplyForm__submit(this); return false;">
+		<input type="hidden" name="relTypeCode" value="article" /> <input
+			type="hidden" name="relId" value="${article.id}" />
 
 		<table>
 			<tbody>
@@ -60,6 +89,15 @@
 						<div class="form-control-box">
 							<textarea maxlength="300" name="body" placeholder="내용을 입력해주세요."
 								class="height-300"></textarea>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th>첨부1 비디오</th>
+					<td>
+						<div class="form-control-box">
+							<input type="file" accept="video/*" capture
+								name="file__reply__0__common__attachment__1">
 						</div>
 					</td>
 				</tr>
@@ -101,17 +139,10 @@
 
 <style>
 .reply-modify-form-modal {
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background-color: rgba(0, 0, 0, 0.4);
-	display: none;
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.4); display: none;
 }
-.reply-modify-form-modal-actived .reply-modify-form-modal
-	{
-	display: flex;
+.reply-modify-form-modal-actived .reply-modify-form-modal {
+    display: flex;
 }
 </style>
 
@@ -129,8 +160,7 @@
 			<div class="form-control-label">수정</div>
 			<div class="form-control-box">
 				<button type="submit">수정</button>
-				<button type="button"
-					onclick="ReplyList__hideModifyFormModal();">취소</button>
+				<button type="button" onclick="ReplyList__hideModifyFormModal();">취소</button>
 			</div>
 		</div>
 	</form>
@@ -154,7 +184,6 @@
 		}
 		var id = form.id.value;
 		var body = form.body.value;
-		
 		ReplyList__submitModifyFormDone = true;
 		$.post('../reply/doModifyReplyAjax', {
 			id : id,
@@ -219,14 +248,23 @@
 		html += '<td>' + reply.id + '</td>';
 		html += '<td>' + reply.regDate + '</td>';
 		html += '<td>' + reply.extra.writer + '</td>';
-		html += '<td class="reply-body">' + reply.body + '</td>';
+		html += '<td>';
+		html += '<div class="reply-body">' + reply.body + '</div>';
+		if (reply.extra.file__common__attachment__1) {
+            var file = reply.extra.file__common__attachment__1;
+            html += '<video controls src="http://localhost:8085/usr/file/streamVideo?id=' + file.id + '">video not supported</video>';
+        }
+		
+		html += '</td>';
 		html += '<td>';
 		if (reply.extra.actorCanDelete) {
 			html += '<button type="button" onclick="ReplyList__delete(this);">삭제</button>';
 		}
+		
 		if (reply.extra.actorCanModify) {
 			html += '<button type="button" onclick="ReplyList__showModifyFormModal(this);">수정</button>';
 		}
+		
 		html += '</td>';
 		html += '</tr>';
 		var $tr = $(html);

@@ -22,7 +22,7 @@
 	}
 </script>
 <form method="POST" class="form1" action="doWrite" onsubmit="ArticleWriteForm__submit(this); return false;">
-	<input type="hidden" name="redirectUrl" value="/article/detail?id=#id">
+	<input type="hidden" name="redirectUrl" value="/usr/article/detail?id=#id">
 	<div class="table-box con">
 		<table>
 			<tbody>
