@@ -56,6 +56,7 @@ public class Util {
 			return "img";
 		case "mp4":
 		case "avi":
+		case "mov":
 			return "video";
 		case "mp3":
 			return "audio";
@@ -76,6 +77,8 @@ public class Util {
 		case "png":
 			return ext;
 		case "mp4":
+			return ext;
+		case "mov":
 			return ext;
 		case "avi":
 			return ext;
@@ -144,9 +147,9 @@ public class Util {
 		return null;
 	}
 
-	public static <T extends Object> T getCacheData(LoadingCache cache, int id) {
+	public static <T extends Object> T getCacheData(LoadingCache cache, int key) {
 		try {
-			return (T)cache.get(id);
+			return (T)cache.get(key);
 		} catch (ExecutionException e) {
 			return null;
 		}
