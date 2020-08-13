@@ -1,7 +1,10 @@
 package com.sbs.lyb.at.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sbs.lyb.at.dto.Article;
+import com.sbs.lyb.at.dto.File;
+import com.sbs.lyb.at.dto.ResultData;
 import com.sbs.lyb.at.service.ArticleService;
 
 @Controller
@@ -32,7 +37,6 @@ public class ArticleController {
 		int id = Integer.parseInt((String) param.get("id"));
 
 		Article article = articleService.getForPrintArticleById(id);
-
 		model.addAttribute("article", article);
 
 		return "article/detail";
@@ -41,6 +45,19 @@ public class ArticleController {
 	@RequestMapping("/usr/article/write")
 	public String showWrite() {
 		return "article/write";
+	}
+	
+	@RequestMapping("/usr/article/doWriteAjax")
+	@ResponseBody
+	public ResultData doWriteAjax(@RequestParam Map<String, Object> param, HttpServletRequest request) {
+		Map<String, Object> rsDataBody = new HashMap<>();
+		
+		param.put("memberId", request.getAttribute("loginedMemberId"));
+		
+		int newArticleId = articleService.write(param);
+		rsDataBody.put("replyId", newArticleId);
+
+		return new ResultData("S-1", String.format("%d번 게시물이 생성되었습니다.", newArticleId), rsDataBody);
 	}
 	
 	@RequestMapping("/usr/article/modify")
@@ -80,15 +97,5 @@ public class ArticleController {
 		sb.insert(0, "<script>");
 		sb.append("</script>");
 		return sb.toString();
-	}
-	
-	@RequestMapping("/usr/article/doWrite")
-	public String doWrite(@RequestParam Map<String, Object> param) {
-		int newArticleId = articleService.write(param);
-
-		String redirectUrl = (String) param.get("redirectUrl");
-		redirectUrl = redirectUrl.replace("#id", newArticleId + "");
-
-		return "redirect:" + redirectUrl;
 	}
 }
