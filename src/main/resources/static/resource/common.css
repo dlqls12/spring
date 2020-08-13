@@ -28,30 +28,40 @@ label[for] {
 	display: inline-block;
 }
 
+.img-box>img, .img-box>svg {
+	width: 100%;
+	display: block;
+}
+
+.video-box>video {
+	width: 100%;
+	display: block;
+}
+
 .con {
 	margin-left: auto;
 	margin-right: auto;
 }
 
 .border-red {
-	border:10px solid red;
+	border: 10px solid red;
 }
 
-html > head + body:nth-child(2) .height-300 {
-	min-height:100px;
+html>head+body:nth-child(2) .height-300 {
+	min-height: 100px;
 }
 
 .bg-white {
-	background-color:white;
+	background-color: white;
 }
 
 .padding-10 {
-	padding:10px;
+	padding: 10px;
 }
 
 /* flex 관련 */
 .flex {
-	display:flex;
+	display: flex;
 }
 
 .flex-ai-c {
@@ -89,19 +99,19 @@ html > head + body:nth-child(2) .height-300 {
 }
 
 .form1 .form-row {
-	display:flex;
+	display: flex;
 }
 
-.form1 .form-row > .form-control-label {
-	display:flex;
+.form1 .form-row>.form-control-label {
+	display: flex;
 	align-items: center;
-	padding:10px;
+	padding: 10px;
 }
 
-.form1 .form-row > .form-control-box {
-	display:flex;
+.form1 .form-row>.form-control-box {
+	display: flex;
 	align-items: center;
-	padding:10px;
+	padding: 10px;
 }
 
 /* 커스텀 */
@@ -112,47 +122,4 @@ html > head + body:nth-child(2) .height-300 {
 .page-title-box {
 	margin-top: 30px;
 	margin-bottom: 30px;
-}
-
-.reply-list-box > table > tbody > tr[data-modify-mode="N"] .modify-mode-visible {
-	display:none;
-}
-
-.reply-list-box > table > tbody > tr[data-modify-mode="Y"] .modify-mode-invisible {
-	display:none;
-}
-
-.reply-list-box > table > tbody > tr > .reply-body-td > .modify-mode-visible > form {
-	width:100%;
-	display:block;
-}
-
-.reply-list-box > table > tbody > tr > .reply-body-td > .modify-mode-visible > form > textarea {
-	width:100%;
-	height:100px;
-	box-sizing:border-box;
-	display:block;
-}
-
-.reply-write > form {
-	display:block;
-	width:100%;
-}
-
-.reply-write > form > table {
-	width:100%;
-	border-collapse:collapse;
-}
-
-.reply-write >form > table th, .reply-write > form > table td {
-	border:1px solid black;
-	padding:10px;
-}
-
-.reply-write > form > table textarea {
-	width:100%;
-	height:100px;
-	display:block;
-	box-sizing:border-box;
-	resize: none;
 }
