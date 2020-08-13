@@ -1,10 +1,7 @@
 package com.sbs.lyb.at.controller;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,8 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sbs.lyb.at.dto.Article;
-import com.sbs.lyb.at.dto.File;
-import com.sbs.lyb.at.dto.ResultData;
 import com.sbs.lyb.at.service.ArticleService;
 
 @Controller
@@ -75,7 +70,7 @@ public class ArticleController {
 		StringBuilder sb = new StringBuilder();
 		String msg = id + "번 글이 수정 되었습니다.";
 		sb.append("alert('" + msg + "');");
-		sb.append("location.replace('./list');");
+		sb.append("location.replace('./detail?id=" + id + "');");
 
 		sb.insert(0, "<script>");
 		sb.append("</script>");

@@ -6,7 +6,12 @@
 <%@ include file="../part/head.jspf"%>
 
 <script>
+	var ArticleWriteForm__submitDone = false;
 	function ArticleWriteForm__submit(form) {
+		if ( ArticleWriteForm__submitDone ) {
+			alert('처리중입니다.');
+			return;
+		}
 		form.title.value = form.title.value.trim();
 		if (form.title.value.length == 0) {
 			form.title.focus();
@@ -19,14 +24,46 @@
 			alert('내용을 입력해주세요.');
 			return;
 		}
-		form.submit();
+		
+		var startUploadFiles = function(onSuccess) {
+			if ( form.file__article__0__common__attachment__1.value.length == 0 && form.file__article__0__common__attachment__2.value.length == 0 ) {
+				onSuccess();
+				return;
+			}
+			var fileUploadFormData = new FormData(form); 
+			$.ajax({
+				url : './../file/doUploadAjax',
+				data : fileUploadFormData,
+				processData : false,
+				contentType : false,
+				dataType:"json",
+				type : 'POST',
+				success : onSuccess
+			});
+		}
+		ArticleWriteForm__submitDone = true;
+		startUploadFiles(function(data) {
+			var fileIdsStr = '';
+			if ( data && data.body && data.body.fileIdsStr ) {
+				fileIdsStr = data.body.fileIdsStr;
+			}
+			form.fileIdsStr.value = fileIdsStr;
+			form.file__article__0__common__attachment__1.value = '';
+			form.file__article__0__common__attachment__2.value = '';
+			
+			form.submit();
+		});
 	}
 </script>
 <form method="POST" class="table-box con form1" action="doWrite"
 	onsubmit="ArticleWriteForm__submit(this); return false;">
-	<input type="hidden" name="redirectUri" value="/article/detail?id=#id">
+	<input type="hidden" name="fileIdsStr" />
+	<input type="hidden" name="redirectUri" value="/usr/article/detail?id=#id">
 
 	<table>
+		<colgroup>
+			<col width="100"></col>
+		</colgroup>
 		<tbody>
 			<tr>
 				<th>제목</th>
@@ -46,9 +83,27 @@
 				</td>
 			</tr>
 			<tr>
+				<th>첨부1 비디오</th>
+				<td>
+					<div class="form-control-box">
+						<input type="file" accept="video/*"
+							name="file__article__0__common__attachment__1">
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th>첨부2 비디오</th>
+				<td>
+					<div class="form-control-box">
+						<input type="file" accept="video/*"
+							name="file__article__0__common__attachment__2">
+					</div>
+				</td>
+			</tr>
+			<tr>
 				<th>작성</th>
 				<td>
-					<button class="btn btn-primary" type="submit">작성</button>
+					<button type="submit">작성</button>
 				</td>
 			</tr>
 		</tbody>
