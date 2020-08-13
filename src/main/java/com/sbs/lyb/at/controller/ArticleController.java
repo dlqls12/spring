@@ -47,17 +47,14 @@ public class ArticleController {
 		return "article/write";
 	}
 	
-	@RequestMapping("/usr/article/doWriteAjax")
-	@ResponseBody
-	public ResultData doWriteAjax(@RequestParam Map<String, Object> param, HttpServletRequest request) {
-		Map<String, Object> rsDataBody = new HashMap<>();
-		
-		param.put("memberId", request.getAttribute("loginedMemberId"));
-		
+	@RequestMapping("/usr/article/doWrite")
+	public String doWrite(@RequestParam Map<String, Object> param) {
 		int newArticleId = articleService.write(param);
-		rsDataBody.put("replyId", newArticleId);
 
-		return new ResultData("S-1", String.format("%d번 게시물이 생성되었습니다.", newArticleId), rsDataBody);
+		String redirectUri = (String) param.get("redirectUri");
+		redirectUri = redirectUri.replace("#id", newArticleId + "");
+
+		return "redirect:" + redirectUri;
 	}
 	
 	@RequestMapping("/usr/article/modify")
