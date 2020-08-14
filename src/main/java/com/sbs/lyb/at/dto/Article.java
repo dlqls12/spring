@@ -15,6 +15,7 @@ public class Article {
 	private String updateDate;
 	private boolean delStatus;
 	private String delDate;
+	private int memberId;
 	private boolean displayStatus;
 	private String title;
 	private String body;

@@ -52,13 +52,16 @@
 			</c:if>
 		</tbody>
 	</table>
-	<div>
-		<ul>
-			<li><a href="list">[목록으로 돌아가기]</a></li>
-			<li><a href="modify?id=${article.id}">[수정하기]</a></li>
-			<li><a href="doDelete?id=${article.id}">[삭제하기]</a></li>
-		</ul>
-	</div>
+</div>
+
+<div class="con">
+	<a href="list">목록으로 돌아가기</a>
+	<c:if test="${article.extra.actorCanModify}">
+		<a href="modify?id=${article.id}">수정</a>
+	</c:if>
+	<c:if test="${article.extra.actorCanDelete}">
+		<a href="doDelete?id=${article.id}" onclick="if ( confirm('삭제하시겠습니까?') == false ) return false;">삭제</a>
+	</c:if>
 </div>
 
 <c:if test="${isLogined}">
@@ -173,8 +176,8 @@
 			</tbody>
 		</table>
 	</form>
-
 </c:if>
+
 
 <h2 class="con">댓글 리스트</h2>
 

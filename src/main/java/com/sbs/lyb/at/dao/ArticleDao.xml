@@ -38,8 +38,8 @@
 		INTO article
 		SET regDate = NOW(),
 		updateDate = NOW(),
-		displayStatus =1,
 		title = #{title},
-		body = #{body}
+		body = #{body},
+		memberId = #{memberId}
 	</insert>
 </mapper>

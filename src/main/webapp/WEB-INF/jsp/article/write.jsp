@@ -24,7 +24,21 @@
 			alert('내용을 입력해주세요.');
 			return;
 		}
+		var maxSizeMb = 50;
+		var maxSize = maxSizeMb * 1024 * 1024 //50MB
 		
+		if (form.file__article__0__common__attachment__1.value) {
+			if ( form.file__article__0__common__attachment__1.files[0].size > maxSize ) {
+				alert(maxSizeMb + "MB 이하의 파일을 업로드 해주세요.");
+				return;
+			} 
+		}
+		if (form.file__article__0__common__attachment__2.value) {
+			if ( form.file__article__0__common__attachment__2.files[0].size > maxSize ) {
+				alert(maxSizeMb + "MB 이하의 파일을 업로드 해주세요.");
+				return;
+			} 
+		}
 		var startUploadFiles = function(onSuccess) {
 			if ( form.file__article__0__common__attachment__1.value.length == 0 && form.file__article__0__common__attachment__2.value.length == 0 ) {
 				onSuccess();
@@ -59,7 +73,7 @@
 	onsubmit="ArticleWriteForm__submit(this); return false;">
 	<input type="hidden" name="fileIdsStr" />
 	<input type="hidden" name="redirectUri" value="/usr/article/detail?id=#id">
-
+	<input type="hidden" name="memberId" value="${loginedMemberId}" />
 	<table>
 		<colgroup>
 			<col width="100"></col>

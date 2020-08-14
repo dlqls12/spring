@@ -1,5 +1,12 @@
 package com.sbs.lyb.at.service;
 
+import com.sbs.lyb.at.dao.ArticleDao;
+import com.sbs.lyb.at.dto.Article;
+import com.sbs.lyb.at.dto.File;
+import com.sbs.lyb.at.dto.Member;
+import com.sbs.lyb.at.dto.Reply;
+import com.sbs.lyb.at.util.Util;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -8,11 +15,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.sbs.lyb.at.dao.ArticleDao;
-import com.sbs.lyb.at.dto.Article;
-import com.sbs.lyb.at.dto.File;
-import com.sbs.lyb.at.util.Util;
 
 @Service
 public class ArticleService {
@@ -27,8 +29,28 @@ public class ArticleService {
 		return articles;
 	}
 
-	public Article getForPrintArticleById(int id) {
+	private void updateForPrintInfo(Member actor, Article article) {
+		Util.putExtraVal(article, "actorCanDelete", actorCanDelete(actor, article));
+		Util.putExtraVal(article, "actorCanModify", actorCanModify(actor, article));
+
+		System.out.println(Util.getExtraVal(article, "actorCanModify", "ㅋㅋ"));
+	}
+
+	// 액터가 해당 댓글을 수정할 수 있는지 알려준다.
+	public boolean actorCanModify(Member actor, Article article) {
+		return actor != null && actor.getId() == article.getMemberId() ? true : false;
+	}
+
+	// 액터가 해당 댓글을 삭제할 수 있는지 알려준다.
+	public boolean actorCanDelete(Member actor, Article article) {
+		return actorCanModify(actor, article);
+	}
+
+	public Article getForPrintArticleById(Member actor, int id) {
 		Article article = articleDao.getForPrintArticleById(id);
+
+		updateForPrintInfo(actor, article);
+
 		List<File> files = fileService.getFilesMapKeyFileNo("article", article.getId(), "common", "attachment");
 
 		Map<String, File> filesMap = new HashMap<>();
@@ -37,11 +59,7 @@ public class ArticleService {
 			filesMap.put(file.getFileNo() + "", file);
 		}
 
-		if (article.getExtra() == null) {
-			article.setExtra(new HashMap<>());
-		}
-
-		article.getExtra().put("file__common__attachment", filesMap);
+		Util.putExtraVal(article, "file__common__attachment", filesMap);
 
 		return article;
 	}
@@ -65,7 +83,7 @@ public class ArticleService {
 
 		return id;
 	}
-
+	
 	public void delete(int id) {
 		articleDao.delete(id);
 	}
