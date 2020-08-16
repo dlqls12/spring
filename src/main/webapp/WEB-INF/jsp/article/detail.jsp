@@ -30,7 +30,7 @@
 					<td>
 						<div class="video-box">
 							<video controls
-								src="/usr/file/streamVideo?id=${article.extra.file__common__attachment['1'].id}">video
+								src="/usr/file/streamVideo?id=${article.extra.file__common__attachment['1'].id}&updateDate=${article.extra.file__common__attachment['1'].updateDate}">video
 								not supported
 							</video>
 						</div>
@@ -54,13 +54,12 @@
 	</table>
 </div>
 
-<div class="con">
-	<a href="list">목록으로 돌아가기</a>
+<div class="btn-box con margin-top-20">
 	<c:if test="${article.extra.actorCanModify}">
-		<a href="modify?id=${article.id}">수정</a>
+		<a href="modify?id=${article.id}">[수정]</a>
 	</c:if>
 	<c:if test="${article.extra.actorCanDelete}">
-		<a href="doDelete?id=${article.id}" onclick="if ( confirm('삭제하시겠습니까?') == false ) return false;">삭제</a>
+		<a href="doDelete?id=${article.id}" onclick="if ( confirm('삭제하시겠습니까?') == false ) return false;">[삭제]</a>
 	</c:if>
 </div>
 
@@ -328,9 +327,8 @@
 		if ( reply.extra.file__common__attachment ) {
 			for ( var no in reply.extra.file__common__attachment ) {
 				var file = reply.extra.file__common__attachment[no];
-	            html += '<div class="video-box"><video controls src="/usr/file/streamVideo?id=' + file.id + '">video not supported</video></div>';				
+	            html += '<div class="video-box"><video controls src="/usr/file/streamVideo?id=' + file.id + '&updateDate=' + file.updateDate + '">video not supported</video></div>';				
 			}
-            
         }
 		
 		html += '</td>';

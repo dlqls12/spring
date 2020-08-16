@@ -7,18 +7,17 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.sbs.lyb.at.dto.Article;
+import com.sbs.lyb.at.dto.Reply;
 
 @Mapper
 public interface ArticleDao {
 	List<Article> getForPrintArticles();
 
 	Article getForPrintArticleById(@Param("id") int id);
+	
+	Article getArticleById(@Param("id") int id);
 
 	void write(Map<String, Object> param);
-
-	void writeReply(Map<String, Object> param);
-
-	void delete(int id);
 
 	void modify(Map<String, Object> param);
 }
